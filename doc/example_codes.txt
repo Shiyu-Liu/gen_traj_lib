@@ -1,0 +1,167 @@
+// Example codes for generating a trajectory in 3d space
+
+#include "trajectory_3dspace.h"
+#include "trajectory_nd.h"
+#include <ros/ros.h>
+
+// example of trajectory generation in N space from waypoints defined in a .txt file
+void Example_Code_Nspace_Trajectory()
+{
+    const int data_size = 6; // set data size to 6 for instance
+    GenTrajLib::TrajectoryNd traj(GenTrajLib::TrajectoryType::Poly3order, data_size);
+
+    std::string file_path = "your_traj_file";
+    std::string msgerr;
+
+    if(!traj.loadWaypointFromTxtFile(file_path, msgerr))
+    {
+        // std::cerr << msgerr.data();  // ostream logging
+        ROS_ERROR(msgerr.data()); // ros logging
+        return;
+    }
+
+    // set initial pose if necessary
+    Eigen::VectorXd init_pose(6); 
+    init_pose << 0.1, 0.2, 0.3, 0.4, 0.5, 0.6; 
+    traj.setInitPose(init_pose);
+
+    if(!traj.doInterpolation(msgerr)) // interpolate trajectory
+    {
+        // std::cerr << msgerr.data();
+        ROS_ERROR(msgerr.data());
+        return;
+    }
+
+    // before go into loop, set init time
+    double t0 = ros::Time::now().toSec(); // ros time
+    traj.setInitTime(t0);
+
+    // intialize variables for desired trajectory
+    Eigen::VectorXd pose; pose.resize(data_size);
+    Eigen::VectorXd velocity; velocity.resize(data_size);
+    Eigen::VectorXd acceleration; acceleration.resize(data_size);
+
+    double tf = traj.getFinalTime(); // global final time for the trajectory
+
+    while(true) // controller loop
+    {
+        // ...
+        traj.getTrajNow(pose, velocity, acceleration, ros::Time::now().toSec());
+
+        // ...
+
+        if (ros::Time::now().toSec() > tf)
+            break;
+        // ...
+    }
+
+    return;
+}
+
+
+// example of trajectory generation in 3d space (orientation represented by unit quaternion) from waypoints defined in a .txt file
+void Example_Code_3dspaceQuat_Trajectory()
+{
+    GenTrajLib::Trajectory3dQuat traj(GenTrajLib::TrajectoryType::Poly5order);
+
+    std::string file_path = "your_traj_file";
+    std::string msgerr;
+
+    if(!traj.loadWaypointFromTxtFile(file_path, msgerr))
+    {
+        // std::cerr << msgerr.data(); // if ros environment unavailable
+        ROS_ERROR(msgerr.data()); 
+        return;
+    }
+
+    // set initial pose if necessary
+    Eigen::Vector3d init_pos; init_pos.setZero();
+    Eigen::Quaterniond init_att; init_att.setIdentity();
+    traj.setInitPose(init_pos, init_att);
+
+    if(!traj.doInterpolation(msgerr)) // interpolate trajectory
+    {
+        // std::cerr << msgerr.data();
+        ROS_ERROR(msgerr.data());
+        return;
+    }
+
+    // before go into loop, set init time
+    double t0 = ros::Time::now().toSec(); // ros time
+    traj.setInitTime(t0);
+
+    // intialize variables for desired trajectory
+    Eigen::VectorXd pose; // take care of quaternion order: quat = [q_x, q_y, q_z, q_w]
+    Eigen::VectorXd velocity;
+    Eigen::VectorXd acceleration; 
+
+    double tf = traj.getFinalTime(); // global final time for the trajectory
+
+    while(true) // controller loop
+    {
+        // ...
+        traj.getTrajNow(pose, velocity, acceleration, ros::Time::now().toSec());
+
+        // ...
+
+        if (ros::Time::now().toSec() > tf)
+            break;
+        // ...
+    }
+
+    return;
+}
+
+
+// example of trajectory generation in 3d space (orientation represented by unit quaternion) from waypoints defined in a .txt file
+void Example_Code_3dspaceQuat_Trajectory()
+{
+    GenTrajLib::Trajectory3dEuler traj(GenTrajLib::TrajectoryType::Poly7order);
+
+    std::string file_path = "your_traj_file";
+    std::string msgerr;
+
+    if(!traj.loadWaypointFromTxtFile(file_path, msgerr))
+    {
+        // std::cerr << msgerr.data(); // if ros environment unavailable
+        ROS_ERROR(msgerr.data()); 
+        return;
+    }
+
+    // set initial pose if necessary
+    Eigen::Vector3d init_pos; init_pos.setZero();
+    Eigen::Vector3d init_eul; init_eul.setZero(); // eul = [phi, theta, psi] refering to roll-pitch-yaw angles 
+    traj.setInitPose(init_pos, init_eul);
+
+    if(!traj.doInterpolation(msgerr)) // interpolate trajectory
+    {
+        // std::cerr << msgerr.data();
+        ROS_ERROR(msgerr.data());
+        return;
+    }
+
+    // before go into loop, set init time
+    double t0 = ros::Time::now().toSec(); // ros time
+    traj.setInitTime(t0);
+
+    // intialize variables for desired trajectory
+    Eigen::VectorXd pose; // take care of quaternion order: quat = [q_x, q_y, q_z, q_w]
+    Eigen::VectorXd velocity;
+    Eigen::VectorXd acceleration; 
+
+    double tf = traj.getFinalTime(); // global final time for the trajectory
+
+    while(true) // controller loop
+    {
+        // ...
+        traj.getTrajNow(pose, velocity, acceleration, ros::Time::now().toSec());
+
+        // ...
+
+        if (ros::Time::now().toSec() > tf)
+            break;
+        // ...
+    }
+
+    return;
+}
