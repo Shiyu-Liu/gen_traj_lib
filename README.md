@@ -1,7 +1,7 @@
 # gen_traj_lib
 
 ## **Description**:
-C++ library for trajectory generation. 
+C++ library for trajectory generation embedded in ROS. 
 
 An abstract base class (**TrajectoryBase**) is provided. It is for loading desired waypoints written in .txt file (with a specified format), as well as interpolating data by one of the following methods: 
 **cubic spline**, **polynomial order 3**, **polynomial order 5** and **polynomial order 7**. 
@@ -29,7 +29,7 @@ Then three options of the derived classes are given:
 
 - **Protocol of waypoints definition**: 
 
-The traveling time for each waypoint is given in first column, then starting from second column desired waypoints are written row-by-row. The variables should be split by TAB (one or several is no matter). Example trajectories written in .txt file could be found in 'test/traj/' folder. See 'doc/waypoints_3dspace_euler.png' and 'doc/waypoints_3dspace_quat.png' for the explanation of example trajectories.
+The traveling time for each waypoint must be given in first column, then starting from second column desired waypoints must be written row-by-row. The variables should be split by TAB (one or several is no matter). Example trajectories written in .txt file could be found in 'test/traj/' folder. See 'doc/waypoints_3dspace_euler.png' and 'doc/waypoints_3dspace_quat.png' for the explanation of example trajectories.
 
 
 - **Matlab scripts and testing** (in 'test/' folder):
@@ -42,13 +42,11 @@ The traveling time for each waypoint is given in first column, then starting fro
 - **Declaration and definition** of classes and methods are in 'include/' and 'src/' folders.
 
 
-- **Build and library**:
+- **Build and import as library**:
 
-   - Run *$catkin build trajectory_lib* in catkin workspace to build the library (or using another CMake compiler).
+   - Run *$catkin build gen_traj_lib* in catkin workspace to build the library (or using another CMake compiler).
 
-   - Then in your project, add *find_package(catkin REQUIRED COMPONENTS trajectory_lib)* in CMakeLists.txt.
-
-
+   - Then in your CMake-built project, add *find_package(catkin REQUIRED COMPONENTS gen_traj_lib)* in CMakeLists.txt.
 
 
 ## **Detailed Explanation**:
